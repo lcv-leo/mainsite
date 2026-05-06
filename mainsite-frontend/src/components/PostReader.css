@@ -322,14 +322,6 @@
   box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);
 }
 
-.post-reader .share-donate {
-  background: #ec4899;
-}
-
-.post-reader .share-donate:hover {
-  box-shadow: 0 8px 24px rgba(236, 72, 153, 0.3);
-}
-
 .site-shell.theme-dark .post-reader .html-content mark {
   background: rgba(250, 204, 21, 0.25);
 }

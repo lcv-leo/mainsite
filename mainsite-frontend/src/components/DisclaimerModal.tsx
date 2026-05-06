@@ -6,7 +6,7 @@
 // Versão: v1.6.1
 // Descrição: Redimensionamento dinâmico, corpo rolável com parágrafos justificados/recuados e botão liberado somente após leitura integral.
 
-import { AlertTriangle, ChevronDown, Heart } from 'lucide-react';
+import { AlertTriangle, ChevronDown } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import type { ActivePalette, DisclaimerItem, DisclaimersConfig } from '../types';
@@ -16,7 +16,6 @@ interface DisclaimerModalProps {
   onClose: () => void;
   activePalette: ActivePalette | null;
   config: DisclaimersConfig | null;
-  onDonationTrigger?: () => void;
 }
 
 const SCROLL_END_TOLERANCE_PX = 2;
@@ -30,7 +29,6 @@ interface DisclaimerItemViewProps {
   dontShowAgain: boolean;
   setDontShowAgain: (v: boolean) => void;
   onAgree: () => void;
-  onSkipDonation: () => void;
   onCanCloseChange: (value: boolean) => void;
 }
 
@@ -46,7 +44,6 @@ const DisclaimerItemView = ({
   dontShowAgain,
   setDontShowAgain,
   onAgree,
-  onSkipDonation,
   onCanCloseChange,
 }: DisclaimerItemViewProps) => {
   const [canClose, setCanClose] = useState(false);
@@ -76,20 +73,14 @@ const DisclaimerItemView = ({
     };
   }, [evaluate]);
 
-  const isDonationMode = disclaimer.isDonationTrigger;
-  const primaryBg = isDonationMode ? '#ec4899' : activePalette.titleColor;
-  const primaryFg = isDonationMode ? '#fff' : activePalette.bgColor;
+  const primaryBg = activePalette.titleColor;
+  const primaryFg = activePalette.bgColor;
   const surfaceBg = isDarkBase ? 'rgba(24, 24, 28, 0.9)' : 'rgba(255, 255, 255, 0.88)';
   const fadeColor = isDarkBase ? 'rgba(24, 24, 28, 1)' : 'rgba(255, 255, 255, 1)';
 
   const handleAgree = () => {
     if (!canClose) return;
     onAgree();
-  };
-
-  const handleSkip = () => {
-    if (!canClose) return;
-    onSkipDonation();
   };
 
   return (
@@ -137,12 +128,12 @@ const DisclaimerItemView = ({
         style={{
           display: 'flex',
           justifyContent: 'center',
-          color: isDonationMode ? '#ec4899' : activePalette.titleColor,
+          color: activePalette.titleColor,
           opacity: 0.9,
           flex: '0 0 auto',
         }}
       >
-        {isDonationMode ? <Heart size={44} /> : <AlertTriangle size={44} />}
+        <AlertTriangle size={44} />
       </div>
       <h3
         id="disclaimer-title"
@@ -268,9 +259,7 @@ const DisclaimerItemView = ({
             alignItems: 'center',
             justifyContent: 'center',
             gap: '10px',
-            boxShadow: canClose
-              ? `0 8px 24px ${isDonationMode ? 'rgba(236, 72, 153, 0.4)' : `${activePalette.titleColor}40`}`
-              : 'none',
+            boxShadow: canClose ? `0 8px 24px ${activePalette.titleColor}40` : 'none',
             opacity: canClose ? 1 : 0.45,
             filter: canClose ? 'none' : 'saturate(0.6)',
           }}
@@ -287,8 +276,7 @@ const DisclaimerItemView = ({
             e.currentTarget.style.transform = 'translateY(0)';
           }}
         >
-          {isDonationMode ? <Heart size={18} fill="#fff" /> : null}
-          {disclaimer.buttonText || (isDonationMode ? 'Apoiar Projeto' : 'Concordo')}
+          {disclaimer.buttonText || 'Concordo'}
         </button>
 
         {!canClose && (
@@ -297,33 +285,12 @@ const DisclaimerItemView = ({
           </span>
         )}
 
-        {isDonationMode && (
-          <button
-            type="button"
-            onClick={handleSkip}
-            disabled={!canClose}
-            aria-disabled={!canClose}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: activePalette.fontColor,
-              fontSize: '13px',
-              opacity: canClose ? 0.6 : 0.3,
-              cursor: canClose ? 'pointer' : 'not-allowed',
-              textDecoration: 'underline',
-              fontWeight: 700,
-              marginTop: '4px',
-            }}
-          >
-            Pular agora e ler os textos
-          </button>
-        )}
       </div>
     </div>
   );
 };
 
-const DisclaimerModal = ({ show, onClose, activePalette, config, onDonationTrigger }: DisclaimerModalProps) => {
+const DisclaimerModal = ({ show, onClose, activePalette, config }: DisclaimerModalProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [canClose, setCanClose] = useState(false);
@@ -351,7 +318,7 @@ const DisclaimerModal = ({ show, onClose, activePalette, config, onDonationTrigg
   // v03.22.00 / mainsite-app audit closure (MEDIUM): ESC respects the same
   // scroll-to-end gate as the "Concordo" button. The disclaimer intentionally
   // requires full-read; ESC bypass would defeat the design. Once read, ESC
-  // advances/closes (donation trigger only fires through explicit button).
+  // advances/closes only after the reader reaches the end.
   useEscapeKey(advanceOrClose, !!isReady && canClose);
 
   if (!isReady || !currentDisclaimer) {
@@ -363,11 +330,6 @@ const DisclaimerModal = ({ show, onClose, activePalette, config, onDonationTrigg
     activePalette.bgColor &&
     (activePalette.bgColor.startsWith('#0') || activePalette.bgColor.startsWith('#1'))
   );
-
-  const handleAgree = () => {
-    if (currentDisclaimer.isDonationTrigger && onDonationTrigger) onDonationTrigger();
-    advanceOrClose();
-  };
 
   return (
     <div
@@ -406,8 +368,7 @@ const DisclaimerModal = ({ show, onClose, activePalette, config, onDonationTrigg
         positionIndex={currentIndex}
         dontShowAgain={dontShowAgain}
         setDontShowAgain={setDontShowAgain}
-        onAgree={handleAgree}
-        onSkipDonation={advanceOrClose}
+        onAgree={advanceOrClose}
         onCanCloseChange={setCanClose}
       />
     </div>

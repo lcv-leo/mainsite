@@ -4,7 +4,6 @@
 |------------|--------|------------------|-------------|----------------|
 | @cloudflare/workers-types | ^4.20260331.1 | MIT OR Apache-2.0 | Não | https://registry.npmjs.org/@cloudflare/workers-types/-/workers-types-4.20260331.1.tgz |
 | @eslint/js | ^10.0.1 | MIT | Não | https://registry.npmjs.org/@eslint/js/-/js-10.0.1.tgz |
-| @sumup/sdk | ^0.1.4 | Apache-2.0 | Não | https://registry.npmjs.org/@sumup/sdk/-/sdk-0.1.4.tgz |
 | @types/dompurify | ^3.2.0 | MIT | Não | https://registry.npmjs.org/@types/dompurify/-/dompurify-3.2.0.tgz |
 | @types/react | ^19.2.14 | MIT | Não | https://registry.npmjs.org/@types/react/-/react-19.2.14.tgz |
 | @types/react-dom | ^19.2.3 | MIT | Não | https://registry.npmjs.org/@types/react-dom/-/react-dom-19.2.3.tgz |

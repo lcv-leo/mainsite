@@ -19,7 +19,7 @@ This repo hosts two independent deploys that share a D1 database (`bigdata_db`):
 ## Filing issues
 
 - **Bug reports**: include URL hit, expected vs actual behavior, and (if applicable) browser console / Worker logs / D1 query traces.
-- **Feature requests**: explain the use case. Public-facing surface (post rendering, comments, ratings, share-by-email, donation flow, AI chat) needs careful UX consideration.
+- **Feature requests**: explain the use case. Public-facing surface (post rendering, comments, ratings, share-by-email, AI chat) needs careful UX consideration.
 - **Documentation gaps**: open an issue or a PR directly.
 
 ---
@@ -52,15 +52,15 @@ All gates must be GREEN. CI re-runs these on push.
 
 ### PR description
 
-Include what changed, why, and how you tested. Public surface changes (route shapes, schema, JSON-LD, OG/Twitter cards, payment widget integration) need careful review.
+Include what changed, why, and how you tested. Public surface changes (route shapes, schema, JSON-LD, OG/Twitter cards) need careful review.
 
 ### Action pinning
 
 This repo enforces SHA-pinned GitHub Actions. Don't downgrade to floating tags. Dependabot opens version-bump PRs with new SHAs + tag comments.
 
-### `public/_headers` is untouchable
+### `public/_headers` changes
 
-The `mainsite-frontend/public/_headers` file is required by SumUp / Mercado Pago Payment Widget and MUST NOT be modified without operator authorization. Any code path that mutates it at build/deploy time should be rejected.
+The `mainsite-frontend/public/_headers` file controls the public Content-Security-Policy and must only be changed with explicit security review. Any code path that mutates it at build/deploy time should be rejected.
 
 ### D1 schema changes
 

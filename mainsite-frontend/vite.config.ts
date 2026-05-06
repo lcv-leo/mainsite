@@ -36,8 +36,8 @@ export default defineConfig({
     // Estratégia de cache alinhada com HTMLRewriter em functions/[[path]].ts:
     // - HTML de /p/* e / é NetworkFirst com maxAge=300s para limitar staleness
     //   de meta tags/JSON-LD injetados no edge quando o admin edita um post.
-    // - Mutations e pagamentos são NetworkOnly (nunca cached).
-    // - Terceiros (SumUp SDK, Turnstile) não entram no cache do SW — SW só
+    // - Mutations e AI são NetworkOnly (nunca cached).
+    // - Terceiros (Turnstile) não entram no cache do SW — SW só
     //   cobre self.origin. O CSP no _headers não é alterado (C3 do plano).
     VitePWA({
       registerType: 'autoUpdate',
@@ -92,12 +92,11 @@ export default defineConfig({
               expiration: { maxEntries: 60, maxAgeSeconds: 300 },
             },
           },
-          // Mutations, pagamentos, AI — SEMPRE NetworkOnly (nunca cachear)
+          // Mutations e AI — SEMPRE NetworkOnly (nunca cachear)
           {
             urlPattern: ({ url }) =>
               url.origin === self.location.origin &&
-              (url.pathname.startsWith('/api/sumup/') ||
-                url.pathname.startsWith('/api/ai/') ||
+              (url.pathname.startsWith('/api/ai/') ||
                 url.pathname === '/api/comment' ||
                 url.pathname === '/api/rating' ||
                 url.pathname === '/api/contact' ||

@@ -4,9 +4,9 @@
  */
 // Módulo: mainsite-frontend/src/components/ChatWidget.tsx
 // Versão: v1.6.0
-// Descrição: TypeScript migration. Chat MD3 + Glassmorphism. Gatilho de Doação preservado.
+// Descrição: TypeScript migration. Chat MD3 + Glassmorphism.
 
-import { Heart, Send, Sparkles, X } from 'lucide-react';
+import { Send, Sparkles, X } from 'lucide-react';
 import { type FormEvent, useEffect, useRef, useState } from 'react';
 import type { ActivePalette, Post } from '../types';
 import './ChatWidget.css';
@@ -17,7 +17,6 @@ interface ChatMessage {
   id: string;
   role: 'user' | 'bot';
   text: string;
-  hasDonationButton?: boolean;
 }
 
 interface ChatWidgetProps {
@@ -26,7 +25,6 @@ interface ChatWidgetProps {
   currentPost: Post | null;
   activePalette: ActivePalette;
   API_URL: string;
-  triggerDonation?: () => void;
 }
 
 const createMessageId = (): string => {
@@ -36,19 +34,17 @@ const createMessageId = (): string => {
   return `msg-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 };
 
-const ChatWidget = ({ isOpen, onClose, currentPost, activePalette, API_URL, triggerDonation }: ChatWidgetProps) => {
+const ChatWidget = ({ isOpen, onClose, currentPost, activePalette, API_URL }: ChatWidgetProps) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: createMessageId(),
       role: 'bot',
       text: 'Olá. Como posso guiar sua reflexão sobre os textos hoje?',
-      hasDonationButton: false,
     },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [aiVisualStatus, setAiVisualStatus] = useState<AiVisualStatus>('idle');
-  const [interactionCount, setInteractionCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const aiStatusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -81,14 +77,10 @@ const ChatWidget = ({ isOpen, onClose, currentPost, activePalette, API_URL, trig
     setIsLoading(true);
     setAiVisualStatus('thinking');
 
-    const currentCount = interactionCount + 1;
-    setInteractionCount(currentCount);
-
     try {
       const payload = {
         message: userMsg,
         currentContext: currentPost ? { title: currentPost.title, content: currentPost.content } : null,
-        askForDonation: currentCount === 3,
       };
 
       const res = await fetch(`${API_URL}/ai/public/chat`, {
@@ -100,17 +92,11 @@ const ChatWidget = ({ isOpen, onClose, currentPost, activePalette, API_URL, trig
       if (!res.ok) throw new Error('Falha de comunicação neural.');
       const data = await res.json();
 
-      let rawText: string = data.reply || data.text || 'Processamento concluído.';
-      let showDonationButton = false;
-
-      if (rawText.includes('[[PEDIR_DOACAO]]')) {
-        showDonationButton = true;
-        rawText = rawText.replace('[[PEDIR_DOACAO]]', '').trim();
-      }
+      const rawText: string = data.reply || data.text || 'Processamento concluído.';
 
       setMessages((prev) => [
         ...prev,
-        { id: createMessageId(), role: 'bot', text: rawText, hasDonationButton: showDonationButton },
+        { id: createMessageId(), role: 'bot', text: rawText },
       ]);
       setAiVisualStatus('responding');
       aiStatusTimeoutRef.current = setTimeout(() => {
@@ -123,7 +109,6 @@ const ChatWidget = ({ isOpen, onClose, currentPost, activePalette, API_URL, trig
           id: createMessageId(),
           role: 'bot',
           text: 'Sinal interrompido. Tente novamente em instantes.',
-          hasDonationButton: false,
         },
       ]);
       setAiVisualStatus('responding');
@@ -178,12 +163,6 @@ const ChatWidget = ({ isOpen, onClose, currentPost, activePalette, API_URL, trig
           {messages.map((msg) => (
             <div key={msg.id} className={`chat-widget__message-row chat-widget__message-row--${msg.role}`}>
               <div className={`chat-widget__bubble chat-widget__bubble--${msg.role}`}>{msg.text}</div>
-
-              {msg.hasDonationButton && (
-                <button type="button" onClick={() => triggerDonation?.()} className="chat-widget__donation">
-                  <Heart size={16} fill="#fff" /> Apoiar o Projeto
-                </button>
-              )}
             </div>
           ))}
           {isLoading && (

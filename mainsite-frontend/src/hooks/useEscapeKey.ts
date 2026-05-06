@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 
 /**
  * v03.22.00 / mainsite-app audit closure (MEDIUM): centralized ESC-key
- * handler hook. Pre-fix the contact / donation / disclaimer modals only
+ * handler hook. Pre-fix the contact / comment / disclaimer modals only
  * closed via backdrop click, leaving keyboard-only users without a way
  * out (WCAG 2.1 Level AA recommends ESC for dialog dismissal). Each
  * modal calls this hook with `enabled` tied to its own visibility state

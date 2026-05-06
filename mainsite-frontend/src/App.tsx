@@ -37,10 +37,9 @@ const ContactModal = lazy(() => import('./components/ContactModal'));
 const CommentModal = lazy(() => import('./components/CommentModal'));
 const DisclaimerModal = lazy(() => import('./components/DisclaimerModal'));
 const ChatWidget = lazy(() => import('./components/ChatWidget'));
-const DonationModal = lazy(() => import('./components/DonationModal'));
 
 const API_URL = '/api';
-const APP_VERSION = 'APP v03.22.00';
+const APP_VERSION = 'APP v03.23.00';
 const SITE_NAME = 'Reflexos da Alma';
 const SITE_URL = 'https://www.reflexosdaalma.blog';
 const ABOUT_PATH = '/sobre-este-site';
@@ -101,8 +100,6 @@ const App = () => {
   const [showShareModal, setShowShareModal] = useState<ShareModalState>({ show: false, email: '', turnstileToken: '' });
   const [showContactModal, setShowContactModal] = useState(false);
   const [showCommentModal, setShowCommentModal] = useState(false);
-  const [showDonationModal, setShowDonationModal] = useState(false);
-  const [donationResumeCheckoutId, setDonationResumeCheckoutId] = useState<string | null>(null);
 
   const [isSubmittingContact, setIsSubmittingContact] = useState(false);
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
@@ -263,32 +260,6 @@ const App = () => {
     };
     window.addEventListener('pointerdown', trackPointer, { passive: true });
     return () => window.removeEventListener('pointerdown', trackPointer);
-  }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const checkoutId = params.get('checkout_id');
-    if (!checkoutId) return;
-
-    setDonationResumeCheckoutId(checkoutId);
-    setShowDonationModal(true);
-
-    const viewportH = typeof window !== 'undefined' ? window.innerHeight : 800;
-    const nextTop = Math.max(16, Math.min(viewportH * 0.5 - 36, Math.max(16, viewportH - 90)));
-    setToastTop(nextTop);
-    setToast({
-      show: true,
-      message: 'Retomando o pagamento seguro para confirmar o resultado final...',
-      type: 'info',
-    });
-    const toastTimeout = window.setTimeout(() => setToast((prev) => ({ ...prev, show: false })), 4000);
-
-    params.delete('checkout_id');
-    const nextQuery = params.toString();
-    const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ''}${window.location.hash}`;
-    window.history.replaceState({}, '', nextUrl);
-
-    return () => window.clearTimeout(toastTimeout);
   }, []);
 
   useEffect(() => {
@@ -723,7 +694,6 @@ const App = () => {
               onShare={handleShare}
               onContact={() => setShowContactModal(true)}
               onComment={() => setShowCommentModal(true)}
-              onDonation={() => setShowDonationModal(true)}
               isSendingEmail={isSendingEmail}
               isNotHomePage={isDeepLinkedPost}
               zoomLevel={zoomLevel}
@@ -772,7 +742,6 @@ const App = () => {
           onClose={() => setShowDisclaimerFlow(false)}
           activePalette={activePalette}
           config={disclaimers}
-          onDonationTrigger={() => setShowDonationModal(true)}
         />
         <ShareOverlay
           modalState={showShareModal}
@@ -798,23 +767,12 @@ const App = () => {
           currentPost={currentPost}
           turnstileSiteKey={TURNSTILE_SITE_KEY}
         />
-        <DonationModal
-          show={showDonationModal}
-          onClose={() => {
-            setShowDonationModal(false);
-            setDonationResumeCheckoutId(null);
-          }}
-          activePalette={activePalette}
-          API_URL={API_URL}
-          resumeCheckoutId={donationResumeCheckoutId}
-        />
         <ChatWidget
           isOpen={isChatOpen}
           onClose={() => setIsChatOpen(false)}
           currentPost={currentPost}
           activePalette={activePalette}
           API_URL={API_URL}
-          triggerDonation={() => setShowDonationModal(true)}
         />
       </Suspense>
       <ContentUpdateToast visible={contentSync.hasUpdate} onRefresh={refreshPosts} onDismiss={contentSync.dismiss} />

@@ -6,7 +6,7 @@
 // Version: v2.0.0
 // Description: Fase 4 visual redesign — editorial title, gradient divider, byline, left accent border, minimal share icons.
 import DOMPurify from 'dompurify';
-import { Edit3, Heart, Home, Link2, Loader2, Mail, MessageCircle, MessageSquare } from 'lucide-react';
+import { Edit3, Home, Link2, Loader2, Mail, MessageCircle, MessageSquare } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import { serializeJsonLd } from '../lib/structuredData';
 import type { ActivePalette, Post, SiteStatus } from '../types';
@@ -25,7 +25,6 @@ interface PostReaderProps {
   onShare: (type: 'whatsapp' | 'link' | 'email') => void;
   onContact: () => void;
   onComment: () => void;
-  onDonation: () => void;
   isSendingEmail: boolean;
   isNotHomePage: boolean;
   zoomLevel: number;
@@ -46,7 +45,6 @@ const PostReader = ({
   onShare,
   onContact,
   onComment,
-  onDonation,
   isSendingEmail,
   isNotHomePage,
   zoomLevel,
@@ -380,12 +378,6 @@ const PostReader = ({
             <Edit3 size={20} />
           </button>
           <span className="share-caption">Comentar</span>
-        </div>
-        <div className="share-item">
-          <button type="button" onClick={onDonation} className="share-btn share-donate" title="Apoiar este Espaço">
-            <Heart size={20} />
-          </button>
-          <span className="share-caption">Apoiar</span>
         </div>
       </nav>
     </article>

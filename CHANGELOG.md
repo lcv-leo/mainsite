@@ -1,5 +1,31 @@
 # Changelog — MainSite App
 
+## [mainsite-worker v02.19.00 + mainsite-frontend v03.23.00] - 2026-05-06
+### BREAKING / Removido — doações, pagamentos, SumUp e PIX
+**Worker (`mainsite-worker`)**
+- Removidas as rotas `/api/sumup/*` e toda a superfície pública de checkout/pagamento SumUp. Não há consumidores externos documentados; chamadas antigas passam a não ter endpoint operacional neste app.
+- Removidos helpers financeiros, schemas de checkout, `askForDonation`, prompt de doação, bindings/secrets de SumUp/PIX e dependência `@sumup/sdk`.
+
+**Frontend (`mainsite-frontend`)**
+- Removidos `DonationModal`, `SumUpCardWidget`, testes, botão "Apoiar" do `PostReader`, gatilho de doação do `ChatWidget` e retomada por `checkout_id`.
+- `DisclaimerModal` deixou de tratar `isDonationTrigger`; disclaimers públicos mantêm somente o read-gate editorial.
+- CSP em `public/_headers` e cache Workbox deixaram de permitir/nominar gateways SumUp/OPPWA/bandeiras/3DS; manteve Turnstile, analytics, YouTube e Cloudflare Insights.
+- `site/index.html` deixou de ser landing de pagamento e passou a ser página neutra do projeto.
+### Alterado — dependências, workflows e Dependabot
+- Dependências atualizadas para as versões correntes verificadas em 2026-05-06, incluindo React 19.2.6, Hono 4.12.18, Wrangler 4.88.0, Workers Types 4.20260506.1, Google GenAI 1.52.0, Zod 4.4.3, vite-plugin-pwa 1.3.0 e lint-staged 17.0.2.
+- `deploy.yml` deixou de exportar `VITE_SUMUP_PUBLIC_API_KEY`.
+- Dependabot agora cobre `github-actions`, `/`, `/mainsite-frontend` e `/mainsite-worker`; actions SHA-pinned já estavam nos releases mais recentes.
+### Validação
+- `npm outdated --long` sem pendências em `/`, `mainsite-frontend` e `mainsite-worker`.
+- `npm audit --audit-level=high` sem vulnerabilidades.
+- Frontend: `npm run lint`; `npm test`; `npm run build`.
+- Worker: `npm run lint`; `npm test`; `npx tsc --noEmit`.
+- Root/site: `npm run format:public:check`.
+- YAML dos workflows/dependabot parseado via `js-yaml`; `git diff --check`.
+### Versões
+- mainsite-frontend APP v03.22.00 → APP v03.23.00
+- mainsite-worker APP v02.18.00 → APP v02.19.00
+
 ## [mainsite-worker v02.18.00 + mainsite-frontend v03.22.00] - 2026-05-01
 ### Adicionado — auditoria de segurança + UX + paridade TipTap (worker + frontend)
 **Worker (`mainsite-worker`)**

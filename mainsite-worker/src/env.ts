@@ -40,15 +40,6 @@ export interface RawEnv {
   GEMINI_API_KEY: SecretStoreBinding;
   RESEND_API_KEY: SecretStoreBinding;
 
-  // --- SumUp ---
-  SUMUP_API_KEY_PRIVATE: SecretStoreBinding;
-  SUMUP_MERCHANT_CODE: SecretStoreBinding;
-
-  // --- PIX ---
-  PIX_KEY: SecretStoreBinding;
-  PIX_NAME: SecretStoreBinding;
-  PIX_CITY: SecretStoreBinding;
-
   // --- Turnstile (Secret Store → .get()) ---
   TURNSTILE_SECRET_KEY: SecretStoreBinding;
 
@@ -88,15 +79,6 @@ export interface Env {
   CLOUDFLARE_PW: string;
   GEMINI_API_KEY: string;
   RESEND_API_KEY: string;
-
-  // --- SumUp ---
-  SUMUP_API_KEY_PRIVATE: string;
-  SUMUP_MERCHANT_CODE: string;
-
-  // --- PIX ---
-  PIX_KEY: string;
-  PIX_NAME: string;
-  PIX_CITY: string;
 
   // --- Moderação (GCP NL API + Turnstile) ---
   GCP_NL_API_KEY: string;

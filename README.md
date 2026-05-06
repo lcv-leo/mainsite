@@ -12,19 +12,20 @@
 
 **Reflexos da Alma** — public personal blog + companion services. Two independent Cloudflare deploys served from this monorepo, both reading from a shared Cloudflare D1 database (`bigdata_db`):
 
-- **`mainsite-frontend`** — React 19 + Vite 8 single-page app on Cloudflare Pages, primary domain `reflexosdaalma.blog` (+ secondary aliases). Public-facing site with reading experience, comments, ratings, AI chatbot, share-by-email, donations (SumUp + PIX), and accessibility-first design.
-- **`mainsite-worker`** — Hono backend on Cloudflare Workers serving `/api/*` for the frontend. AI surfaces (Gemini), payment surfaces (SumUp), moderation (GCP Natural Language API + Turnstile), email relay (Resend), R2 media.
+- **`mainsite-frontend`** — React 19 + Vite 8 single-page app on Cloudflare Pages, primary domain `reflexosdaalma.blog` (+ secondary aliases). Public-facing site with reading experience, comments, ratings, AI chatbot, share-by-email, and accessibility-first design.
+- **`mainsite-worker`** — Hono backend on Cloudflare Workers serving `/api/*` for the frontend. AI surfaces (Gemini), moderation (GCP Natural Language API + Turnstile), email relay (Resend), and R2 media.
 
-**Status.** Stable. Current release: **mainsite-frontend v03.22.00** paired with **mainsite-worker v02.18.00**. See [CHANGELOG.md](./CHANGELOG.md) for the full release history.
+**Status.** Stable. Current release: **mainsite-frontend v03.23.00** paired with **mainsite-worker v02.19.00**. See [CHANGELOG.md](./CHANGELOG.md) for the full release history.
 
 The version history at a glance:
 
 | Release | Scope |
 |---|---|
-| **`mainsite-worker v02.18.00` + `mainsite-frontend v03.22.00`** | **Security + UX audit + TipTap parity.** Worker: SumUp checkout idempotency + ownership table, magic-byte upload validation, sentiment timeout, prompt-injection envelope, cron handler bugfix. Frontend: Error Boundary, ESC handler in all modals (read-gate preserved on disclaimer), fetch timeout, localStorage validation, PostReader↔PostEditor parity (embedded hljs theme, responsive iframes, image max-width, `data-width` whitelist). |
+| **`mainsite-worker v02.19.00` + `mainsite-frontend v03.23.00`** | **Donation/payment removal + dependency/workflow hygiene.** Removed public donation/payment UI, SumUp widget/routes/secrets/dependencies, PIX/payment CSP/PWA cache allowances, and the payment landing page; updated direct dependencies and expanded Dependabot coverage for the root package. |
+| **`mainsite-worker v02.18.00` + `mainsite-frontend v03.22.00`** | **Security + UX audit + TipTap parity.** Worker: magic-byte upload validation, sentiment timeout, prompt-injection envelope, cron handler bugfix. Frontend: Error Boundary, ESC handler in all modals (read-gate preserved on disclaimer), fetch timeout, localStorage validation, PostReader↔PostEditor parity (embedded hljs theme, responsive iframes, image max-width, `data-width` whitelist). |
 | **`mainsite-worker v02.17.06` + `mainsite-frontend v03.21.08`** | **README organizational standardization.** Adopted the shared repository README opening pattern and introduced the top-level version-history table for the monorepo. |
 | **`mainsite-frontend v03.21.06`** | **Typography parity fix.** Restored default text indentation for HTML paragraph rendering so saved PostEditor content matches the intended reading layout. |
-| **`mainsite-worker v02.17.05` + `mainsite-frontend v03.21.05`** | **Pages + Sponsors public surface.** Added the GitHub Pages donation site, corrected the Sponsors custom URL, and modernized the Pages workflow. |
+| **`mainsite-worker v02.17.05` + `mainsite-frontend v03.21.05`** | **Pages + Sponsors public surface.** Added the GitHub Pages project site, corrected the Sponsors custom URL, and modernized the Pages workflow. |
 | **`mainsite-worker v02.17.04` + `mainsite-frontend v03.21.04`** | **Security and history cleanup.** Closed CodeQL issues, removed a leaked legacy Cloudflare token from Git history, and tightened sanitization paths. |
 
 ## What it does
@@ -35,23 +36,22 @@ Public-facing artifact + edge-deployed APIs:
 2. **Comments + ratings** — Turnstile-gated public submission, GCP NL sentiment-aware moderation pipeline, threaded replies, idempotent rating accumulation.
 3. **AI public chatbot (`/api/ai/public/chat`)** — Gemini-powered helper with content-aware context grounded on published posts. Hard caps: per-IP rate limit + global hourly budget cap (default-on).
 4. **Share-by-email + contact** — Turnstile-gated, Resend-relayed, canonical-link-validated, recipient-window-capped (5/recipient/24h).
-5. **Donations / PIX** — SumUp Payment Widget integration (cartão + PIX + APMs unified), legacy `/pay` `/pix` endpoints return `410 Gone` deterministically.
-6. **Theme system** — `/api/theme.css` same-origin, generated from D1 settings to keep CSP strict.
-7. **R2 media + uploads** — `image/jpeg|png|gif|webp|avif|pdf` allowlisted with magic-byte sniffing, 10 MB cap, SVG explicitly blocked (legacy SVGs served sandboxed with `Content-Security-Policy: sandbox`).
-8. **Pages Functions** — server-side rendering for deep links (HTMLRewriter-injected OG/JSON-LD), `/autor/:slug` SSR, sitemap + feed honoring publishing mode.
+5. **Theme system** — `/api/theme.css` same-origin, generated from D1 settings to keep CSP strict.
+6. **R2 media + uploads** — `image/jpeg|png|gif|webp|avif|pdf` allowlisted with magic-byte sniffing, 10 MB cap, SVG explicitly blocked (legacy SVGs served sandboxed with `Content-Security-Policy: sandbox`).
+7. **Pages Functions** — server-side rendering for deep links (HTMLRewriter-injected OG/JSON-LD), `/autor/:slug` SSR, sitemap + feed honoring publishing mode.
 
 ## Architecture
 
 ```
 Browser
   ├──→ Cloudflare Pages: mainsite-frontend (React 19 + Vite 8)
-  │      └─ public/_headers: SumUp/MP Payment Widget CSP (UNTOUCHABLE)
+  │      └─ public/_headers: CSP for Turnstile, analytics, YouTube and Cloudflare Insights
   │      └─ functions/[[path]].ts: SSR for /, /p/:id, /autor/:slug, /sitemap.xml, /feed.xml
   │      └─ /api/* → Service Binding → mainsite-worker
   │
   └──→ Cloudflare Worker: mainsite-worker (Hono)
         ├─ public surface: posts, comments, ratings, AI chat, contact, share-email,
-        │  payments, theme.css, content-fingerprint, uploads
+        │  theme.css, content-fingerprint, uploads
         ├─ admin surface (CF-Access JWT or bearer): post CRUD, settings, moderation,
         │  share-email logs
         └──→ D1 (bigdata_db) + R2 (mainsite-media) + Workers AI + Gemini API
@@ -66,7 +66,6 @@ You will need:
 - The Cloudflare CLI [`wrangler`](https://developers.cloudflare.com/workers/wrangler/).
 - Node.js 24+.
 - Google AI Studio API key (Gemini integration).
-- SumUp Business account API key (donations).
 - Resend API key (transactional email).
 - Cloudflare Turnstile site key + secret (form anti-abuse).
 - (Optional) GCP Service Account with Cloud Natural Language API access (comment moderation).
@@ -97,7 +96,7 @@ Replace `00000000-0000-0000-0000-000000000000` in:
 
 ### 4. Configure Cloudflare Secrets Store secrets
 
-Per `mainsite-worker/wrangler.json`'s `secrets_store_secrets` list, set values for the keys you intend to use (Gemini, Resend, SumUp Private/Merchant, PIX_KEY/NAME/CITY, Turnstile, etc.). `GCP_NL_API_KEY` (Service Account JSON, >1024 chars) cannot live in Secrets Store and must be a native Worker secret:
+Per `mainsite-worker/wrangler.json`'s `secrets_store_secrets` list, set values for the keys you intend to use (Gemini, Resend, Turnstile, etc.). `GCP_NL_API_KEY` (Service Account JSON, >1024 chars) cannot live in Secrets Store and must be a native Worker secret:
 
 ```bash
 npx wrangler secret put GCP_NL_API_KEY --config mainsite-worker/wrangler.json

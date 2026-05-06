@@ -10,7 +10,6 @@ Public deploys: `mainsite-frontend` (Cloudflare Pages) + `mainsite-worker` (Clou
 | @tanstack/react-query | MIT | Não | https://registry.npmjs.org/@tanstack/react-query |
 | dompurify | (MPL-2.0 OR Apache-2.0) | Não | https://registry.npmjs.org/dompurify |
 | lucide-react | ISC | Não | https://registry.npmjs.org/lucide-react |
-| qrcode | MIT | Não | https://registry.npmjs.org/qrcode |
 | react | MIT | Não | https://registry.npmjs.org/react |
 | react-dom | MIT | Não | https://registry.npmjs.org/react-dom |
 | @biomejs/biome | MIT | Não | https://registry.npmjs.org/@biomejs/biome |
@@ -21,7 +20,6 @@ Public deploys: `mainsite-frontend` (Cloudflare Pages) + `mainsite-worker` (Clou
 | @testing-library/jest-dom | MIT | Não | https://registry.npmjs.org/@testing-library/jest-dom |
 | @testing-library/react | MIT | Não | https://registry.npmjs.org/@testing-library/react |
 | @types/node | MIT | Não | https://registry.npmjs.org/@types/node |
-| @types/qrcode | MIT | Não | https://registry.npmjs.org/@types/qrcode |
 | @types/react | MIT | Não | https://registry.npmjs.org/@types/react |
 | @types/react-dom | MIT | Não | https://registry.npmjs.org/@types/react-dom |
 | @vitejs/plugin-react | MIT | Não | https://registry.npmjs.org/@vitejs/plugin-react |
@@ -47,7 +45,6 @@ Public deploys: `mainsite-frontend` (Cloudflare Pages) + `mainsite-worker` (Clou
 | Componente | Licença Original | Modificado? | Origem |
 |------------|------------------|-------------|--------|
 | @google/genai | Apache-2.0 | Não | https://registry.npmjs.org/@google/genai |
-| @sumup/sdk | Apache-2.0 | Não | https://registry.npmjs.org/@sumup/sdk |
 | @types/sanitize-html | MIT | Não | https://registry.npmjs.org/@types/sanitize-html |
 | hono | MIT | Não | https://registry.npmjs.org/hono |
 | sanitize-html | MIT | Não | https://registry.npmjs.org/sanitize-html |
