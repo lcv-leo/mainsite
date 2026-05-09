@@ -17,6 +17,11 @@ import type { Env } from './env.ts';
 import { bumpContentVersion } from './lib/content-version.ts';
 import { getAllowedOrigin } from './lib/origins.ts';
 import { readPublishingMode } from './lib/publishing.ts';
+import {
+  DEFAULT_RATE_LIMIT_TOGGLE,
+  normalizeRateLimitToggleConfig,
+  type RateLimitToggleConfig,
+} from './lib/rate-limit.ts';
 import { EnvSecretsSchema } from './lib/schemas.ts';
 // --- Route Modules ---
 import aboutRoutes from './routes/about.ts';
@@ -126,15 +131,10 @@ const RATE_LIMIT_BINDINGS: Record<string, keyof Pick<Env, 'RL_CHATBOT' | 'RL_EMA
   comments: 'RL_COMMENTS',
 };
 
-interface RlToggleConfig {
-  chatbot: { enabled: boolean };
-  email: { enabled: boolean };
-  comments: { enabled: boolean };
-}
-let cachedRlToggle: RlToggleConfig | null = null;
+let cachedRlToggle: RateLimitToggleConfig | null = null;
 let rlToggleFetchedAt = 0;
 
-async function getRlEnabled(env: Env): Promise<RlToggleConfig> {
+async function getRlEnabled(env: Env): Promise<RateLimitToggleConfig> {
   const now = Date.now();
   if (cachedRlToggle && now - rlToggleFetchedAt < 60000) return cachedRlToggle;
   try {
@@ -142,20 +142,15 @@ async function getRlEnabled(env: Env): Promise<RlToggleConfig> {
       payload: string;
     }>();
     if (record) {
-      const parsed = JSON.parse(record.payload);
-      cachedRlToggle = {
-        chatbot: { enabled: Boolean(parsed?.chatbot?.enabled ?? parsed?.enabled) },
-        email: { enabled: Boolean(parsed?.email?.enabled) },
-        comments: { enabled: Boolean(parsed?.comments?.enabled ?? true) },
-      };
+      cachedRlToggle = normalizeRateLimitToggleConfig(JSON.parse(record.payload));
     } else {
-      cachedRlToggle = { chatbot: { enabled: false }, email: { enabled: false }, comments: { enabled: true } };
+      cachedRlToggle = DEFAULT_RATE_LIMIT_TOGGLE;
     }
     rlToggleFetchedAt = now;
   } catch {
-    cachedRlToggle = { chatbot: { enabled: false }, email: { enabled: false }, comments: { enabled: true } };
+    cachedRlToggle = DEFAULT_RATE_LIMIT_TOGGLE;
   }
-  return cachedRlToggle ?? { chatbot: { enabled: false }, email: { enabled: false }, comments: { enabled: true } };
+  return cachedRlToggle ?? DEFAULT_RATE_LIMIT_TOGGLE;
 }
 
 function createRateLimiterMiddleware(bucketName: 'chatbot' | 'email' | 'comments') {

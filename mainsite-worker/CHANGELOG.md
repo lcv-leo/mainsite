@@ -1,5 +1,10 @@
 # Changelog — Mainsite Worker (Backend)
 
+## [Unreleased]
+### Corrigido — rate limit nativo Cloudflare
+- **`/api/ai/public/chat`** deixou de consultar e registrar hits em `mainsite_rate_limit`; o bloqueio 429 agora fica somente no middleware com binding nativo `RL_CHATBOT`.
+- **`src/lib/rate-limit.ts`** foi reduzido a normalizador de toggles administrativos. Limites numericos seguem declarados em `wrangler.json` (`ratelimits`), nao em D1.
+
 ## [v02.18.00] - 2026-05-01
 ### Adicionado — auditoria de segurança + bugfix
 - **Idempotência + ownership de checkouts SumUp** (`src/routes/payments.ts`): nova tabela `mainsite_sumup_checkouts` (PK `checkout_id`, UNIQUE `idempotency_key`, `caller_hash`) criada via `ensureCheckoutTable()`; `POST /api/sumup/checkout` deduplica por `idempotency_key` derivado de `hashIdentity` (caller fingerprint via `CHECKOUT_OWNERSHIP_SALT` estável) e persiste com `INSERT OR IGNORE`. `GET /api/sumup/checkout/:id/status` aplica check de ownership via `caller_hash` (janela `CHECKOUT_OWNERSHIP_WINDOW_HOURS = 24`); caller diferente recebe `PENDING` ao invés de `403` — não vaza existência do checkout.

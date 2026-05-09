@@ -1,6 +1,10 @@
 # Changelog — MainSite App
 
 ## [Unreleased]
+### Corrigido — worker / rate limit
+- **`/api/ai/public/chat`** deixou de aplicar o cap global D1 redundante (`chat-public-global` / `mainsite_rate_limit`) que retornava 429 antes da chamada ao Gemini quando a tabela auxiliar inexistia ou falhava.
+- **`src/lib/rate-limit.ts`** agora normaliza apenas toggles administrativos (`chatbot`, `email`, `comments`); os limites efetivos permanecem nos bindings nativos `ratelimits` do Cloudflare Worker.
+
 ### Alterado — página pública de sponsor
 - `site/index.html` foi alinhado ao padrão das páginas de apoio dos demais repositórios: CTA central para `https://www.lcv.dev/sponsor?project=mainsite-app`, link do repositório, acesso ao Reflexos da Alma, aviso de ausência de SDK/coleta de cartão e rodapé legal completo da LCV Ideas & Software.
 

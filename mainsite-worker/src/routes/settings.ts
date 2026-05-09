@@ -11,7 +11,7 @@ import type { Env } from '../env.ts';
 import { requireAuth } from '../lib/auth.ts';
 import { getContentFingerprint } from '../lib/content-version.ts';
 import { structuredLog } from '../lib/logger.ts';
-import { DEFAULT_RATE_LIMIT, normalizeRateLimitConfig } from '../lib/rate-limit.ts';
+import { DEFAULT_RATE_LIMIT_TOGGLE, normalizeRateLimitToggleConfig } from '../lib/rate-limit.ts';
 import { buildThemeStylesheet, DEFAULT_THEME_SETTINGS, loadThemeSettings } from '../lib/theme.ts';
 
 const settings = new Hono<{ Bindings: Env }>();
@@ -95,8 +95,8 @@ settings.get('/api/settings/ratelimit', requireAuth, async (c) => {
     const record = await c.env.DB.prepare(
       "SELECT payload FROM mainsite_settings WHERE id = 'mainsite/ratelimit'",
     ).first<{ payload: string }>();
-    if (record) return c.json(normalizeRateLimitConfig(JSON.parse(record.payload)));
-    return c.json(DEFAULT_RATE_LIMIT);
+    if (record) return c.json(normalizeRateLimitToggleConfig(JSON.parse(record.payload)));
+    return c.json(DEFAULT_RATE_LIMIT_TOGGLE);
   } catch (err) {
     structuredLog('error', '[Settings] Erro interno', { error: (err as Error).message });
     return c.json({ error: 'Erro interno.' }, 500);
