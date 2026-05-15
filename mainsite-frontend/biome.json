@@ -1,7 +1,18 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.14/schema.json",
   "files": {
-    "includes": ["**", "!dist", "!dist-ssr", "!INTERACTIVE_EXAMPLES.tsx", "!e2e", "!functions", "!scripts", "!public"]
+    "includes": [
+      "**",
+      "!dist",
+      "!dist-ssr",
+      "!INTERACTIVE_EXAMPLES.tsx",
+      "!e2e",
+      "!functions",
+      "!scripts",
+      "!public",
+      "!wrangler.json",
+      "!**/wrangler.json"
+    ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
