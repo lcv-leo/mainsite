@@ -5,6 +5,10 @@
 # mainsite-app
 
 [![status: stable](https://img.shields.io/badge/status-stable-brightgreen.svg)](#status)
+[![release](https://img.shields.io/github/v/release/LCV-Ideas-Software/mainsite-app?sort=semver)](https://github.com/LCV-Ideas-Software/mainsite-app/releases)
+[![Deploy](https://github.com/LCV-Ideas-Software/mainsite-app/actions/workflows/deploy.yml/badge.svg)](https://github.com/LCV-Ideas-Software/mainsite-app/actions/workflows/deploy.yml)
+[![Pages](https://github.com/LCV-Ideas-Software/mainsite-app/actions/workflows/pages.yml/badge.svg)](https://github.com/LCV-Ideas-Software/mainsite-app/actions/workflows/pages.yml)
+[![CodeQL](https://github.com/LCV-Ideas-Software/mainsite-app/actions/workflows/codeql.yml/badge.svg)](https://github.com/LCV-Ideas-Software/mainsite-app/actions/workflows/codeql.yml)
 [![runtime: Cloudflare Pages + Workers](https://img.shields.io/badge/runtime-Cloudflare%20Pages%20%2B%20Workers-orange.svg)](https://workers.cloudflare.com/)
 [![framework: React 19 + Vite 8](https://img.shields.io/badge/framework-React%2019%20%2B%20Vite%208-61dafb.svg)](https://react.dev/)
 [![backend: Hono on Workers](https://img.shields.io/badge/backend-Hono%20on%20Workers-f97316.svg)](https://hono.dev/)
@@ -15,15 +19,15 @@
 - **`mainsite-frontend`** — React 19 + Vite 8 single-page app on Cloudflare Pages, primary domain `example-blog.invalid` (+ secondary aliases). Public-facing site with reading experience, comments, ratings, AI chatbot, share-by-email, and accessibility-first design.
 - **`mainsite-worker`** — Hono backend on Cloudflare Workers serving `/api/*` for the frontend. AI surfaces (Gemini), moderation (GCP Natural Language API + Turnstile), email relay (Resend), and R2 media.
 
-**Status.** Stable. Current release: **mainsite-frontend v03.23.02** paired with **mainsite-worker v02.19.02**. See [CHANGELOG.md](./CHANGELOG.md) for the full release history.
+**Status.** Stable. Current release: **mainsite-frontend v03.23.03** paired with **mainsite-worker v02.19.03**. See [CHANGELOG.md](./CHANGELOG.md) for the full release history.
 
 The version history at a glance:
 
 | Release                                                         | Scope                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`Unreleased`**                                                | **Sponsor page alignment.** The public project site now uses the shared LCV sponsor-page pattern and routes support to `https://www.lcv.dev/sponsor?project=mainsite-app`, without loading payment SDKs or collecting card data.                                                                                                                                                                                                                                                               |
+| **`mainsite-worker v02.19.03` + `mainsite-frontend v03.23.03`** | **4-gate quality directive compliance.** Added Biome checks to both sub-apps, aligned configs, reformatted code, and bumped APP_VERSION in both packages.                                                                                                                                                                                                                                                                          |
 | **`mainsite-worker v02.19.02` + `mainsite-frontend v03.23.02`** | **Site sponsor card iteration.** `site/index.html` GitHub Sponsors iframe (caixa branca cross-origin) substituído por link card dark navy com ❤ pink + meta cyan + seta animada; card movido para DEPOIS dos botões (lcv.dev/sponsor primário, GitHub Sponsors alternativa). Companion ship Phase 3 (12 repos).                                                                                                                                                                                |
-| **`mainsite-worker v02.19.01` + `mainsite-frontend v03.23.01`** | **Site visual identity refresh.** `site/index.html` (GitHub Pages) reskinneada para a nova identidade dark-first navy/cyan da org LCV (`#050b18`/`#38bdf8`/`#34d399`, gradientes radiais, glow shadows, gradient text no h1). Coordinated Phase 2 companion ship (calculadora, oraculo, astrologo, admin, mainsite, maestro, mtasts). APP_VERSION bumpada em ambos frontend e worker por consistência multi-repo, mas o reskin afeta apenas a página GitHub Pages. Sem mudança no app runtime. |
+| **`mainsite-worker v02.19.01` + `mainsite-frontend v03.23.01`** | **Site visual identity refresh + sponsor-page alignment (2026-05-09).** `site/index.html` (GitHub Pages) recebeu a identidade dark-first navy/cyan da org LCV e consolidou a entrada anterior de sponsor-page alignment: o site do projeto encaminha apoio para `https://www.lcv.dev/sponsor?project=mainsite-app`, sem carregar SDKs de pagamento nem coletar dados de cartão.                                          |
 | **`mainsite-worker v02.19.00` + `mainsite-frontend v03.23.00`** | **Donation/payment removal + dependency/workflow hygiene.** Removed public donation/payment UI, SumUp widget/routes/secrets/dependencies, PIX/payment CSP/PWA cache allowances, and the payment landing page; updated direct dependencies and expanded Dependabot coverage for the root package.                                                                                                                                                                                               |
 | **`mainsite-worker v02.18.00` + `mainsite-frontend v03.22.00`** | **Security + UX audit + TipTap parity.** Worker: magic-byte upload validation, sentiment timeout, prompt-injection envelope, cron handler bugfix. Frontend: Error Boundary, ESC handler in all modals (read-gate preserved on disclaimer), fetch timeout, localStorage validation, PostReader↔PostEditor parity (embedded hljs theme, responsive iframes, image max-width, `data-width` whitelist).                                                                                            |
 | **`mainsite-worker v02.17.06` + `mainsite-frontend v03.21.08`** | **README organizational standardization.** Adopted the shared repository README opening pattern and introduced the top-level version-history table for the monorepo.                                                                                                                                                                                                                                                                                                                           |
@@ -134,13 +138,14 @@ This repo's [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs 
 ## Repository conventions
 
 - **License**: [AGPL-3.0-or-later](./LICENSE). Network-service trigger applies: running a modified fork as a public service obligates you to publish modifications.
-- **Security disclosure**: see [SECURITY.md](./SECURITY.md). Note the Architectural Decision recorded there: content protection is **attribution-based**, not blocking-based.
-- **Contributing**: see [CONTRIBUTING.md](./CONTRIBUTING.md). PRs require GREEN gates locally for both sub-apps + SHA-pinned actions + `public/_headers` is untouchable.
-- **Code of Conduct**: see [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md). Contributor Covenant 2.1.
+- **Notices**: see [NOTICE](./NOTICE) and [THIRDPARTY](./THIRDPARTY.md).
+- **Security disclosure**: see [SECURITY.md](./SECURITY.md).
+- **Code of conduct**: see [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
 - **Changelog**: [CHANGELOG.md](./CHANGELOG.md).
-- **Sponsorship**: see the repo's `Sponsor` button or [.github/FUNDING.yml](./.github/FUNDING.yml).
-- **Code owners**: [.github/CODEOWNERS](./.github/CODEOWNERS).
-- **Action pinning**: all GitHub Actions are pinned by full SHA (supply-chain hardening baseline).
+- **Contributing**: see [CONTRIBUTING.md](./CONTRIBUTING.md).
+- **Sponsorship**: see the repo's `Sponsor` button or [central sponsor page](https://www.lcv.dev/sponsor).
+- **Action pinning**: all GitHub Actions are pinned by full SHA per supply-chain hardening baseline.
+- **Code owners**: [.github/CODEOWNERS](.github/CODEOWNERS).
 
 ## Links
 

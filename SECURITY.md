@@ -1,49 +1,33 @@
 # Security Policy
 
-## Reporting a Vulnerability
+## Supported status
 
-If you discover a security vulnerability in this repository, please do **not** open a public issue. Instead, please report it privately to the repository maintainer.
+Latest supported release: v03.23.03, covering mainsite-frontend v03.23.03 and mainsite-worker v02.19.03. The current main branch is also supported for security fixes until the next release is published.
 
-**Contact:** alert@lcvmail.com
+## Reporting a vulnerability
+
+Please do not open a public issue for suspected vulnerabilities, credential leaks, private data exposure, authentication bypasses, payment-flow issues, supply-chain issues, or deployment misconfiguration.
+
+Report privately by email:
+
+- lcv@lcv.dev
+
+If GitHub private vulnerability reporting is enabled for this repository, that channel is also acceptable.
 
 Please include:
-- Description of the vulnerability
-- Steps to reproduce (if applicable)
-- Potential impact
-- Suggested fix (if you have one)
 
-We will acknowledge your report within 24 hours and work to resolve the issue promptly.
+- affected repository, component, route, package, workflow, or public surface;
+- affected version, release tag, commit SHA, or deployment URL when known;
+- impact and exploitability;
+- reproduction steps or a safe proof of concept, if available;
+- whether any credential, personal data, payment data, private editorial material, or operational secret may be involved.
 
-## Supported Versions
+## Scope
 
-| Version | Supported |
-|---------|-----------|
-| Latest  | ✅ |
-| Previous releases | ⚠️ Security updates only |
+In scope: application code, Workers/Pages functions, package publication, GitHub Actions, dependency and supply-chain configuration, repository publication boundaries, security documentation, and public service configuration documented in this repository.
 
-## Security Measures
+Out of scope: social engineering, physical attacks, denial-of-service testing without prior written authorization, spam, automated noisy scanning, and reports that rely only on outdated browser or dependency versions without a concrete vulnerable path in this repository.
 
-This repository employs:
-- **Code Scanning (CodeQL)**: Automated static analysis on all commits
-- **Dependency Scanning (Dependabot)**: Automated dependency vulnerability detection
-- **Secret Scanning**: Detection and remediation of exposed secrets
-- **Branch Protection**: Required status checks before merge to main
+## Coordinated disclosure
 
-## Best Practices
-
-- Keep dependencies up-to-date
-- Use strong authentication (SSH keys, personal access tokens)
-- Review pull requests carefully before merge
-- Report any suspicious activity immediately
-
-## Architectural Decision — Content Protection: Attribution over Blocking
-
-The frontend (`mainsite-frontend`) **does not** install hostile content-protection layers (no `contextmenu`/`selectstart` blocking, no Ctrl+C/Ctrl+S/F12/PrintScreen interceptors, no DevTools detection, no `window.blur` screen blur, no `user-select: none` global CSS, no `@media print` block).
-
-Earlier versions (v03.06.01, v03.06.02) had these hostile layers; they were **deliberately removed** in subsequent releases (CHANGELOG entries for `v03.13.x` and surrounding) for two reasons:
-1. They did not actually prevent capture (PrintScreen happens at OS level before JS sees it; DevTools detection is bypassable; copy-blockers break legitimate flows like share-by-email).
-2. They degraded accessibility — screen readers, keyboard navigation, and assistive tech were impacted by `user-select: none` and synthetic key interception.
-
-The replacement layer is **attribution-based**: a single document-level `copy` listener in `App.tsx` rewrites the clipboard payload to append the canonical source URL, so any text quoted elsewhere carries provenance.
-
-**Operational rule:** any future PR that proposes reintroducing hostile blocking layers should be rejected unless it provides empirical evidence that the layer actually blocks capture without compromising accessibility — a bar the previous attempts did not clear. Audit findings flagging the layer as "missing" should be resolved by pointing at this section, not by reintroducing the layer.
+LCV Ideas & Software will triage reports privately, request clarification when needed, and coordinate remediation before public disclosure. Public disclosure should wait until a fix or mitigation is available, unless there is an immediate user-safety reason to do otherwise.

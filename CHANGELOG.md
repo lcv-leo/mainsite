@@ -117,7 +117,7 @@
 ## [mainsite-worker v02.17.03 + mainsite-frontend v03.21.03] - 2026-04-26
 ### Adicionado — Phase 3 sweep (flip readiness, puramente aditivo)
 - **`CONTRIBUTING.md`**: guia para issues + PRs cobrindo gates locais por sub-app (mainsite-frontend + mainsite-worker), wrangler dry-run, action pinning, versioning, regra de `public/_headers` intocável.
-- **`CODE_OF_CONDUCT.md`**: Contributor Covenant 2.1 com canal `alert@lcvmail.com`.
+- **`CODE_OF_CONDUCT.md`**: Contributor Covenant 3.0 com canal `lcv@lcv.dev`.
 - **`.github/CODEOWNERS`**: `* @example-beneficiary` como owner default.
 - **`.npmignore`**: baseline de ignore para tarball npm (segredo/secrets store/.wrangler/AI memory/internal docs como `NEXTJS_MIGRATION_PLAN.md`).
 - **`THIRDPARTY.md`**: inventário completo de dependências mainsite-frontend + mainsite-worker com licenças e origens.

@@ -1,5 +1,17 @@
 # Changelog — Mainsite Frontend
 
+## [v03.23.03] - 2026-05-15
+### Alterado
+- **4-gate quality directive compliance** — frontend release train aligned with Biome gating, deploy workflow quality checks, cosmetic source formatting, and `APP_VERSION` v03.23.03.
+
+## [v03.23.02] - 2026-05-09
+### Alterado
+- **Repository Pages sponsor card iteration** — release-train alignment with the root `mainsite-app` v03.23.02/v02.19.02 release. No separate Cloudflare Pages frontend runtime behavior change.
+
+## [v03.23.01] - 2026-05-09
+### Alterado
+- **Repository Pages visual identity refresh + sponsor-page alignment** — release-train alignment with the root `mainsite-app` v03.23.01/v02.19.01 release. No separate Cloudflare Pages frontend runtime behavior change.
+
 ## [v03.22.00] - 2026-05-01
 ### Adicionado — auditoria de segurança + UX + paridade TipTap
 - **Error Boundary** (`src/components/ErrorBoundary.tsx`): captura exceções de render, registra em `console` + `window.dataLayer`, oferece fallback com botão de recarga. Wired em `main.tsx` ao redor de `QueryClientProvider+App`.
