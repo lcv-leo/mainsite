@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["@cloudflare/workers-types", "vitest/globals"],
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.test.tsbuildinfo",
+    "allowJs": false
+  },
+  "include": ["src/**/*.test.ts", "src/**/*.spec.ts", "vitest.config.ts"],
+  "exclude": ["node_modules", ".wrangler"]
+}

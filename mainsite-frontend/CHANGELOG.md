@@ -175,7 +175,6 @@
 ### Motivação
 - Alinhar o baseline de telemetria Cloudflare do `mainsite-frontend` ao padrão operacional do workspace.
 
-
 ## [v03.15.00] - 2026-04-17
 ### Alterado
 - **`SumUpCardWidget` estável por conteúdo**: o widget passou a depender da chave estável da allowlist de métodos de pagamento, evitando `unmount`/`mount` extras quando o modal rerenderiza sem mudança lógica na seleção.
@@ -239,11 +238,11 @@
 ### Adicionado — PWA Service Worker
 - **`vite-plugin-pwa ^1.2.0`** em devDependencies. Gera `dist/sw.js` + `dist/workbox-*.js` no build de produção. 18 entradas precacheadas (~409 KB).
 - **Estratégia de cache** alinhada com HTMLRewriter em `functions/[[path]].ts`:
-  * `/` e `/p/:id` (HTML com injeção edge) — **NetworkFirst** com `networkTimeoutSeconds: 3` + `maxAgeSeconds: 300` (5 min). Limita janela de staleness de meta tags/JSON-LD quando admin edita um post.
-  * `/assets/*` (hash no filename) — **CacheFirst** `maxAgeSeconds: 86400` (24h).
-  * `GET /api/posts`, `GET /api/posts/:id`, `GET /api/settings`, `/api/settings/disclaimers`, `/api/content-fingerprint` — **StaleWhileRevalidate** `maxAgeSeconds: 300`.
-  * `/api/sumup/*`, `/api/ai/*`, `/api/comment`, `/api/rating`, `/api/contact`, `/api/zoom`, `/api/shares` — **NetworkOnly** (mutations + pagamentos + taxa dinâmica + chat AI nunca cacheados).
-  * `/sitemap.xml`, `/feed.xml`, `/autor/*` — `navigateFallbackDenylist` (edge functions dinâmicas, não cachear).
+  - `/` e `/p/:id` (HTML com injeção edge) — **NetworkFirst** com `networkTimeoutSeconds: 3` + `maxAgeSeconds: 300` (5 min). Limita janela de staleness de meta tags/JSON-LD quando admin edita um post.
+  - `/assets/*` (hash no filename) — **CacheFirst** `maxAgeSeconds: 86400` (24h).
+  - `GET /api/posts`, `GET /api/posts/:id`, `GET /api/settings`, `/api/settings/disclaimers`, `/api/content-fingerprint` — **StaleWhileRevalidate** `maxAgeSeconds: 300`.
+  - `/api/sumup/*`, `/api/ai/*`, `/api/comment`, `/api/rating`, `/api/contact`, `/api/zoom`, `/api/shares` — **NetworkOnly** (mutations + pagamentos + taxa dinâmica + chat AI nunca cacheados).
+  - `/sitemap.xml`, `/feed.xml`, `/autor/*` — `navigateFallbackDenylist` (edge functions dinâmicas, não cachear).
 - **skipWaiting + clientsClaim**: nova versão ativa no próximo reload após `useContentSync` detectar atualização.
 - **`registerType: 'autoUpdate'`**: atualização silenciosa em background.
 - **`cleanupOutdatedCaches: true`**: caches de versões antigas removidos.
@@ -547,7 +546,7 @@
 
 ## [v03.03.05] - 2026-04-02
 ### Atualizações Tecnológicas (P3 e P4)
-- **Functions JS -> TS**: As Edge Functions (`sitemap.xml.ts`, `[[path]].ts`, `api/[[path]].ts`) foram migradas para TypeScript, adotando a tipagem estrita do `@cloudflare/workers-types` (`EventContext`, `D1Database`). 
+- **Functions JS -> TS**: As Edge Functions (`sitemap.xml.ts`, `[[path]].ts`, `api/[[path]].ts`) foram migradas para TypeScript, adotando a tipagem estrita do `@cloudflare/workers-types` (`EventContext`, `D1Database`).
 - **SDK Gemini**: Concluída a migração do `ai.ts` e `gemini.ts` para o novo `@google/genai` SDK oficial, implementado com motor dinâmico via D1.
 - **Vitest**: Configurada a infraestrutura de testes unitários com o framework `vitest` e `@cloudflare/workers-types`.
 - **Limpeza**: Remoção definitiva do polyfill `Headers.raw()` que já estava obsoleto.
@@ -766,7 +765,6 @@
 
 ### Corrigido/Alterado
 - **Ajuste flexível na Content-Security-Policy (CSP)**: As regras do `public/_headers` foram relaxadas (`https:`) para transpor as limitações de bloqueio que ocorriam na renderização de gateways terceirizados, scripts embarcados do SumUp/Mercado Pago, e redirecionamentos cross-origin complexos do fluxo emissor 3DS.
-
 
 ## [v02.20.00] — 26/03/2026
 ### Removido

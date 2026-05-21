@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
@@ -12,10 +13,12 @@
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "forceConsistentCasingInFileNames": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "allowJs": true
+    "allowJs": true,
+    "checkJs": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", ".wrangler", "**/*.test.ts", "**/*.spec.ts"]

@@ -124,7 +124,6 @@
 ### Motivação
 - Fechar a padronização de traces e logs do Cloudflare no `mainsite-worker` sem regredir a configuração já publicada.
 
-
 ## [v02.11.00] - 2026-04-17
 ### Adicionado
 - **`/api/theme.css`**: nova folha de estilo same-origin gerada pelo worker a partir de `mainsite/appearance` no D1. O endpoint materializa variáveis CSS de tema/typography sem depender de `<style>` inline no frontend.
@@ -276,7 +275,6 @@
 ### Controle de versão
 - `mainsite-worker`: v02.02.02 → v02.02.03
 
-
 ## [v02.02.02] — 2026-04-06
 ### Alterado
 - **Observability 100%**: `head_sampling_rate: 1`, `invocation_logs: true` e `logs.enabled: true` ativados no `wrangler.json` do mainsite-motor.
@@ -310,9 +308,9 @@
 
 ## [v02.01.08] — 2026-04-04
 ### Segurança & Remoções (Tech Debt)
-- **Migração Concluída: Retorno ao SDK Gemini**: Finalizada com sucesso a remoção completa do Cloudflare AI Gateway e Workers AI. 
+- **Migração Concluída: Retorno ao SDK Gemini**: Finalizada com sucesso a remoção completa do Cloudflare AI Gateway e Workers AI.
 - O arquivo `genai.ts` teve a configuração forçada da propriedade `httpOptions` banida, desativando a proxy Layer da Cloudflare e efetuando a requisição nativamente, a fim de expurgar o risco estrito de falhas de timeout formatuais (Erro 524) identificadas durante chamadas de texto pesadas nas features do app.
-- A rota `ai.ts` teve toda a infraestrutura baseada no Workers AI removida. O SDK `@google/genai` processa tudo direto pelo end-point da Google. 
+- A rota `ai.ts` teve toda a infraestrutura baseada no Workers AI removida. O SDK `@google/genai` processa tudo direto pelo end-point da Google.
 - A chave e variáveis `CF_AI_GATEWAY` foram erradicadas dos mapeamentos de `wrangler.json`, Types e Secrets Store para garantir estanqueidade da reversão. Adicionalmente `CF_AI_TOKEN` removida.
 
 ### Controle de versão
@@ -355,7 +353,7 @@
 
 ## [v02.01.03] — 2026-04-02
 ### Alterado
-- **Gemini SDK Integrado**: Refatoração estrutural no abstraidor lógico de IA (`src/lib/genai.ts`) migrando totalmente da antiga requisição REST (`fetch`) para o pacote oficial e mais seguro `@google/genai`. 
+- **Gemini SDK Integrado**: Refatoração estrutural no abstraidor lógico de IA (`src/lib/genai.ts`) migrando totalmente da antiga requisição REST (`fetch`) para o pacote oficial e mais seguro `@google/genai`.
 - Incorporada persistência de configuração *thinking models*, tratamento estrito de erro unificado e instanciamento via `apiKey`.
 
 ### Controle de versão
@@ -426,7 +424,7 @@
 
 ## [v01.35.00] — 28/03/2026
 ### Adicionado/Alterado
-- **Integração SumUp via MCP / Flow 3DS**: Implementados novos endpoints backend de `checkout` e processamento SumUp em lote com captura do `next_step` do desafio de Autorização 3DS (`ACTION_REQUIRED`). 
+- **Integração SumUp via MCP / Flow 3DS**: Implementados novos endpoints backend de `checkout` e processamento SumUp em lote com captura do `next_step` do desafio de Autorização 3DS (`ACTION_REQUIRED`).
 - **Bypass e Polling**: Enpoints para sinalização de bypass na transição do `iframe` e um webhook/público robusto para recebimento (polling de success/failed fallback) atrelados à arquitetura global MCP.
 
 ## [v01.34.00] — 2026-03-24
